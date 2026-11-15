@@ -1,0 +1,15 @@
+$ qtlmapper3 gwas -g data/demo_gwas/genotype.csv -p data/demo_gwas/phenotype.csv -m data/demo_gwas/map.csv --method mlm -o results/gwas
+   grain_weight: MLM(LOCO, PCs=0, P3D)  λGC=1.606  significant=27
+marker chrom   pos      beta            p
+S1_026     1 50.01  2.138206 2.217465e-18
+S1_027     1 52.47  1.926367 7.708106e-15
+S3_025     3 48.15 -1.825503 7.912474e-14
+S1_028     1 54.73  1.800912 2.157027e-13
+S3_026     3 50.15 -1.822656 3.863312e-13
+S3_024     3 46.69 -1.559191 9.744008e-11
+S1_025     1 48.18  1.691071 1.713062e-10
+S3_027     3 52.46 -1.579269 5.936734e-10
+S5_031     5 60.90  1.326833 3.394242e-09
+S3_021     3 40.96 -1.250416 5.717451e-08
+   plant_height: MLM(LOCO, PCs=0, P3D)  λGC=0.952  significant=0
+✓ GWAS done in 1.27 s → results/gwas

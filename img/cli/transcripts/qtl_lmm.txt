@@ -1,0 +1,8 @@
+$ qtlmapper3 qtl -g data/demo_f2/genotype.csv -p data/demo_f2/phenotype.csv -m data/demo_f2/map.csv -t yield --method lmm --permutations 1000 -o results/lmm
+[fastqtl] F2  n=200  markers=100  positions=561  traits=1  method=lmm
+   yield: max LOD 24.22, 5% threshold 3.11
+trait chrom  pos  LOD      locus  ci_lo  ci_hi  bayes_lo  bayes_hi  genome_p
+yield     1 50.7 24.2      M1_11   46.5   52.5      48.5      51.5  0.000999
+yield     3 27.9 12.4 c3.loc27.9   23.9   32.9      24.9      30.9  0.000999
+yield     4 93.3 4.92 c4.loc93.3   80.6   96.6      85.3      96.6     0.002
+✓ done in 6.203 s → results/lmm

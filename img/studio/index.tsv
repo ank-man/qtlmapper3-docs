@@ -1,0 +1,21 @@
+Genotype_matrix	Genotype matrix	Data
+Data_quality_missingness_segregation	Data quality (missingness, segregation)	Data
+Phenotype_distributions	Phenotype distributions	Data
+Trait_correlations	Trait correlations	Data
+Marker_LD_r_heatmap	Marker LD (r²) heatmap	Data
+Circos_genome_overview	Circos genome overview	Genome
+Karyotype_with_QTL_GWAS_hits	Karyotype with QTL & GWAS hits	Genome
+Marker_density	Marker density	Genome
+Linkage_map_QTL_intervals	Linkage map (+ QTL intervals)	Map & QTL
+LOD_profile	LOD profile	Map & QTL
+QTL_effect_plot	QTL effect plot	Map & QTL
+Linkage_map_chart_LinkageMapView_style	Linkage map chart (LinkageMapView style)	Map & QTL
+Genotype_probabilities_VIEWpoly_style	Genotype probabilities (VIEWpoly style)	Map & QTL
+QTL_effects_along_chromosome	QTL effects along chromosome	Map & QTL
+Multi_trait_LOD_heatmap	Multi-trait LOD heatmap	Map & QTL
+QTL_summary_hotspots	QTL summary & hotspots	Map & QTL
+Manhattan_QQ	Manhattan + QQ	GWAS & GS
+Genomic_prediction_accuracy	Genomic prediction accuracy	GWAS & GS
+Regional_association_LocusZoom_style	Regional association (LocusZoom style)	GWAS & GS
+Miami_plot	Miami plot	GWAS & GS
+Circular_Manhattan	Circular Manhattan	GWAS & GS

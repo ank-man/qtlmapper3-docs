@@ -1,0 +1,9 @@
+$ qtlmapper3 stepwise -g data/demo_f2/genotype.csv -p data/demo_f2/phenotype.csv -m data/demo_f2/map.csv -t yield --permutations 200 -o results/step
+   yield: main-effect penalty from 200 permutations = 3.003
+   yield: y ~ Q1 + Q2 + Q3  pLOD=28.736
+QTL chrom  pos
+ Q1     1 50.7
+ Q2     3 27.9
+ Q3     4 93.3
+      model LOD 37.75, 58.1% variance
+✓ stepwise done in 0.94 s → results/step

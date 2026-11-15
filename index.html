@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QTLMapper3</title>
+<meta name="description" content="QTLMapper3: fast, validated QTL mapping, GWAS, genomic prediction, population genetics and meta-QTL analysis, with a desktop GUI and a command line.">
+<link rel="icon" href="img/logo.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FFFFFF;--fg:#111827;--muted:#4B5563;--card:#F8FAFC;--line:#E5E7EB;--navy:#12395B;--teal:#0B6E6E;--orange:#F97316;--term:#0F172A;--termfg:#E2E8F0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1220;--fg:#E5E7EB;--muted:#9CA3AF;--card:#111A2E;--line:#1F2A44;--navy:#7FB3E6;--teal:#5EEAD4;--term:#020617}}
+:root[data-theme="dark"]{--bg:#0B1220;--fg:#E5E7EB;--muted:#9CA3AF;--card:#111A2E;--line:#1F2A44;--navy:#7FB3E6;--teal:#5EEAD4;--term:#020617}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 Inter,system-ui,sans-serif}
+a{color:var(--teal)} code{font-family:"JetBrains Mono",monospace;font-size:.9em;background:var(--card);padding:.1em .35em;border-radius:4px}
+nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+nav .in{max-width:1120px;margin:auto;display:flex;gap:18px;align-items:center;padding:10px 16px;overflow-x:auto}
+nav img{width:28px;height:28px} nav b{color:var(--navy);margin-right:auto;white-space:nowrap} nav a{text-decoration:none;color:var(--muted);white-space:nowrap;font-size:.95rem} nav a:hover{color:var(--orange)}
+header{max-width:1120px;margin:auto;padding:56px 16px 24px;display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}
+header h1{font-size:clamp(2rem,5vw,3.2rem);line-height:1.1;margin:.2em 0;color:var(--navy)} header h1 span{color:var(--orange)}
+header p.lead{font-size:1.15rem;color:var(--muted)}
+.btns a{display:inline-block;margin:6px 8px 0 0;padding:10px 18px;border-radius:10px;text-decoration:none;font-weight:600}
+.btns .p{background:var(--orange);color:#fff} .btns .s{border:1px solid var(--line);color:var(--fg)}
+header .hero img{width:100%;border-radius:14px;border:1px solid var(--line);box-shadow:0 20px 50px rgba(18,57,91,.18)}
+main{max-width:1120px;margin:auto;padding:0 16px 80px}
+section{padding-top:48px} h2{font-size:1.9rem;color:var(--navy);margin:0 0 .4em} h3{margin-top:2em}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px} .card h4{margin:.2em 0;color:var(--teal)} .card p{margin:0;color:var(--muted);font-size:.95rem}
+.step{display:grid;grid-template-columns:44px 1fr;gap:16px;margin:28px 0} .num{width:40px;height:40px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-weight:700}
+.sbody h4{margin:.3em 0 .2em;font-size:1.2rem}
+figure{margin:14px 0} figure img{max-width:100%;border:1px solid var(--line);border-radius:10px;display:block} figure.small img{max-width:560px;width:100%}
+figcaption{color:var(--muted);font-size:.9rem;margin-top:6px}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px} .gallery figure{margin:0}
+pre.term{background:var(--term);color:var(--termfg);padding:16px;border-radius:10px;overflow-x:auto;font:13px/1.5 "JetBrains Mono",monospace}
+pre.term .prompt{color:#5EEAD4} pre.term .out{color:var(--termfg)}
+.tablewrap{overflow-x:auto} table{border-collapse:collapse;width:100%;font-size:.95rem} th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)} th{color:var(--muted);font-weight:600}
+.tabs{display:flex;gap:8px;margin:12px 0} .tabs button{font:inherit;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--fg);cursor:pointer} .tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.os{display:none} .os.on{display:block}
+footer{border-top:1px solid var(--line);padding:24px 16px;text-align:center;color:var(--muted);font-size:.9rem}
+@media (max-width:820px){header{grid-template-columns:1fr;padding-top:32px}}
+</style></head><body>
+<nav><div class="in"><img src="img/logo.svg" alt=""><b>QTLMapper3 <small style="color:var(--muted);font-weight:400">v3.1.0</small></b>
+<a href="#features">Features</a><a href="#install">Install</a><a href="#gui">GUI tutorial</a><a href="#cli">Command line</a><a href="#cli-popgen">Popgen</a><a href="#figures">Figures</a><a href="#validation">Validation</a><a href="https://github.com/ank-man/qtlmapper3">GitHub</a></div></nav>
+<header><div>
+<img src="img/logo.svg" alt="" width="72" height="72">
+<h1>QTLMapper<span>3</span></h1>
+<p class="lead">QTL mapping, GWAS, genomic prediction, population genetics, meta-QTL analysis and variant annotation in one fast, validated package, with a desktop app and a scriptable command line.</p>
+<div class="btns"><a class="p" href="https://github.com/ank-man/qtlmapper3/releases/latest">Download</a><a class="s" href="#gui">GUI tutorial</a><a class="s" href="#cli">CLI tutorial</a></div>
+</div><div class="hero"><img src="screenshots/07_qtl_results_tab.png" alt="QTLMapper3 desktop app showing a CIM genome scan"></div></header>
+<main>
+<section id="features"><h2>What it does</h2><div class="cards">
+<div class="card"><h4>Exact genotype probabilities</h4><p>HMM for BC, F2, RIL (selfing/sib) and DH with error model, dominant markers, four map functions and pseudomarker grids.</p></div>
+<div class="card"><h4>Every major QTL scan</h4><p>Haley–Knott, EM, LMM with LOCO kinship, binary traits, CIM, ICIM, two-QTL scans, stepwise multiple-QTL models.</p></div>
+<div class="card"><h4>Permutations in seconds</h4><p>Permutations run as extra phenotype columns through one shared factorisation: 1,000 permutations take about half a second.</p></div>
+<div class="card"><h4>GWAS</h4><p>GLM, MLM (P3D/EMMAX) with LOCO kinship and PCs, and MLMM with mBonf/EBIC model selection.</p></div>
+<div class="card"><h4>Genomic prediction</h4><p>GBLUP, RR-BLUP, A/D/epistatic/RKHS kernels, multi-environment G×E, BayesA/B/C, BRR, Bayesian LASSO, ML models, CV0/CV1/CV2/CV00.</p></div>
+<div class="card"><h4>Population genetics</h4><p>PCA, trees, ADMIXTURE-model ancestry with CV, F<sub>ST</sub>, π, Tajima's D, LD decay and blocks, maps of ancestry pies.</p></div>
+<div class="card"><h4>Meta-QTL</h4><p>Map projection, consensus maps and meta-analysis across studies with five model-selection criteria and heterogeneity statistics.</p></div>
+<div class="card"><h4>Variant annotation</h4><p>snpEff from the command line: effect tables, impact summaries and annotated GWAS/QTL hits with nearest genes.</p></div>
+<div class="card"><h4>Validated</h4><p>Results checked against R/qtl, R/qtl2, rrBLUP, sommer, BGLR and scikit-allel; the checks run in the test suite.</p></div>
+</div></section>
+
+<section id="install"><h2>Install</h2>
+<div class="tabs" role="tablist"><button class="on" data-os="app">Desktop app</button><button data-os="pip">From source</button></div>
+<div class="os on" id="os-app"><p>Download the build for your system from <a href="https://github.com/ank-man/qtlmapper3/releases/latest">Releases</a> (macOS <code>.zip</code>, Windows <code>.zip</code>, Linux <code>.tar.gz</code>). The app tells you when a new version is out.</p></div>
+<div class="os" id="os-pip"><pre class="term"><span class="out">git clone https://github.com/ank-man/qtlmapper3.git
+cd qtlmapper3
+python -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r requirements.txt
+python main.py                 # desktop app
+python qtlmapper3_cli.py --help  # command line</span></pre></div>
+</section>
+
+<section id="gui"><h2>GUI tutorial</h2><figure class=""><a href="img/walkthrough.gif"><img loading="lazy" src="img/walkthrough.gif" alt="A one-minute tour of the desktop app (real screenshots of the demo session)."></a><figcaption>A one-minute tour of the desktop app (real screenshots of the demo session).</figcaption></figure><div class="step"><div class="num">1</div><div class="sbody"><h4>Launch and load data</h4><p>Start with <code>qtlmapper3-gui</code> (or <code>python main.py</code>). Use <b>File → Import Data</b> for your genotype, phenotype and map files, or <b>File → Load Demo Data</b> for a 200-individual F2 cross with three traits.</p><figure class=""><a href="screenshots/02_demo_loaded.png"><img loading="lazy" src="screenshots/02_demo_loaded.png" alt="The project sidebar lists the population, data tables, figures and results."></a><figcaption>The project sidebar lists the population, data tables, figures and results.</figcaption></figure></div></div><div class="step"><div class="num">2</div><div class="sbody"><h4>Inspect your data</h4><p>Double-click <b>Genotypes</b>, <b>Phenotypes</b> or <b>Genetic map</b> in the sidebar to open a sortable table. Double-click any entry under <b>Figures</b> to open it in the Visualization Studio.</p><figure class=""><a href="screenshots/09_genotype_table.png"><img loading="lazy" src="screenshots/09_genotype_table.png" alt="Genotype table opened from the sidebar."></a><figcaption>Genotype table opened from the sidebar.</figcaption></figure><figure class=""><a href="screenshots/12_studio_quality.png"><img loading="lazy" src="screenshots/12_studio_quality.png" alt="Data quality: missing data per marker, segregation distortion and missingness per individual."></a><figcaption>Data quality: missing data per marker, segregation distortion and missingness per individual.</figcaption></figure></div></div><div class="step"><div class="num">3</div><div class="sbody"><h4>Map QTL</h4><p><b>Analysis → QTL Mapping</b>. Choose the trait and method: <code>hk</code>, <code>em</code>, <code>lmm</code> (kinship with LOCO), <code>cim</code>, <code>icim</code>, <code>binary</code> or <code>sm</code>. Set the permutations (1,000 is a good default) and an output folder. A results tab opens with the LOD profile and effect plots. Peaks, support intervals and the genome-wide threshold go to the log and the sidebar.</p><figure class="small"><a href="screenshots/04_qtl_dialog.png"><img loading="lazy" src="screenshots/04_qtl_dialog.png" alt="QTL mapping options."></a><figcaption>QTL mapping options.</figcaption></figure><figure class=""><a href="screenshots/07_qtl_results_tab.png"><img loading="lazy" src="screenshots/07_qtl_results_tab.png" alt="CIM results: all three simulated QTL (chromosomes 1, 3, 4) above the 5% threshold."></a><figcaption>CIM results: all three simulated QTL (chromosomes 1, 3, 4) above the 5% threshold.</figcaption></figure></div></div><div class="step"><div class="num">4</div><div class="sbody"><h4>Explore results in the Visualization Studio</h4><p><b>Visualization → Create Figures</b>, or double-click a result in the sidebar. Pick a figure on the left, adjust trait, chromosome or peak, zoom and pan with the toolbar, and <b>Export figure…</b> to PNG, PDF, SVG or TIFF at any DPI.</p><figure class=""><a href="screenshots/10_studio_linkage_map.png"><img loading="lazy" src="screenshots/10_studio_linkage_map.png" alt="Linkage map with QTL support intervals."></a><figcaption>Linkage map with QTL support intervals.</figcaption></figure><figure class=""><a href="screenshots/13_studio_effect.png"><img loading="lazy" src="screenshots/13_studio_effect.png" alt="Phenotype by genotype at the chromosome-1 peak."></a><figcaption>Phenotype by genotype at the chromosome-1 peak.</figcaption></figure><figure class=""><a href="screenshots/18_studio_karyotype.png"><img loading="lazy" src="screenshots/18_studio_karyotype.png" alt="Karyotype (karyoploteR style): marker-density ideograms, LOD tracks and QTL intervals."></a><figcaption>Karyotype (karyoploteR style): marker-density ideograms, LOD tracks and QTL intervals.</figcaption></figure></div></div><div class="step"><div class="num">5</div><div class="sbody"><h4>Genomic prediction and GWAS</h4><p><b>Analysis → Genomic Selection</b> compares models by 5-fold cross-validation (GBLUP, RR-BLUP, dominance/epistasis kernels, RKHS, BayesA/B/C, BRR, Bayesian LASSO, random forest, gradient boosting, SVR). <b>Analysis → GWAS</b> runs GLM, MLM with LOCO kinship, or MLMM.</p><figure class=""><a href="screenshots/08_gs_results_tab.png"><img loading="lazy" src="screenshots/08_gs_results_tab.png" alt="Cross-validated accuracy of six models for yield."></a><figcaption>Cross-validated accuracy of six models for yield.</figcaption></figure></div></div><div class="step"><div class="num">6</div><div class="sbody"><h4>Stay up to date</h4><p>QTLMapper3 checks GitHub for a new release when it starts (at most once a day) and offers to download it. You can also use <b>Help → Check for Updates…</b>, or turn the startup check off in the popup.</p><figure class="small"><a href="screenshots/16_update_popup.png"><img loading="lazy" src="screenshots/16_update_popup.png" alt="The update popup shows the release notes."></a><figcaption>The update popup shows the release notes.</figcaption></figure></div></div></section>
+<section id="cli"><h2>Command-line tutorial</h2><p>Every example below is a real run on the bundled demo data (<code>data/demo_f2</code>: 200 F2 individuals, 100 markers, three simulated QTL for <i>yield</i> on chromosomes 1, 3 and 4; <code>data/demo_gwas</code>: diversity panel).</p><h3>Single-QTL genome scans</h3><p>One command reads the data, computes HMM genotype probabilities on a 1-cM grid, scans, runs permutations, finds peaks with 1.5-LOD and Bayes support intervals, and writes tables and figures.</p><pre class="term"><span class="prompt">$ qtlmapper3 qtl \
+    -g data/demo_f2/genotype.csv -p data/demo_f2/phenotype.csv -m data/demo_f2/map.csv -t yield --method hk --permutations 1000 \
+    -o results/hk</span>
+<span class="out">[fastqtl] F2  n=200  markers=100  positions=561  traits=1  method=hk
+   yield: max LOD 17.86, 5% threshold 3.02
+trait chrom  pos  LOD      locus  ci_lo  ci_hi  bayes_lo  bayes_hi  genome_p
+yield     1 50.7 17.9      M1_11   46.5   53.5      47.5      52.5  0.000999
+yield     3 27.9 6.86 c3.loc27.9   21.9   33.9       1.9      33.9  0.000999
+yield     5 13.3 3.93 c5.loc13.3    1.3   29.3       1.3      26.3     0.011
+✓ done in 1.269 s → results/hk</span></pre><figure class=""><a href="img/cli/qtl_hk_lod.png"><img loading="lazy" src="img/cli/qtl_hk_lod.png" alt="Haley–Knott scan. The chromosome-4 QTL is missed and a spurious chromosome-5 peak appears."></a><figcaption>Haley–Knott scan. The chromosome-4 QTL is missed and a spurious chromosome-5 peak appears.</figcaption></figure><pre class="term"><span class="prompt">$ qtlmapper3 qtl \
+    -g data/demo_f2/genotype.csv -p data/demo_f2/phenotype.csv -m data/demo_f2/map.csv -t yield --method lmm --permutations 1000 \
+    -o results/lmm</span>
+<span class="out">[fastqtl] F2  n=200  markers=100  positions=561  traits=1  method=lmm
+   yield: max LOD 24.22, 5% threshold 3.11
+trait chrom  pos  LOD      locus  ci_lo  ci_hi  bayes_lo  bayes_hi  genome_p
+yield     1 50.7 24.2      M1_11   46.5   52.5      48.5      51.5  0.000999
+yield     3 27.9 12.4 c3.loc27.9   23.9   32.9      24.9      30.9  0.000999
+yield     4 93.3 4.92 c4.loc93.3   80.6   96.6      85.3      96.6     0.002
+✓ done in 6.203 s → results/lmm</span></pre><figure class=""><a href="img/cli/qtl_lmm_lod.png"><img loading="lazy" src="img/cli/qtl_lmm_lod.png" alt="With the LOCO kinship model, all three QTL are found."></a><figcaption>With the LOCO kinship model, all three QTL are found.</figcaption></figure><pre class="term"><span class="prompt">$ qtlmapper3 qtl \
+    -g data/demo_f2/genotype.csv -p data/demo_f2/phenotype.csv -m data/demo_f2/map.csv -t yield --method cim --permutations 200 \
+    -o results/cim</span>
+<span class="out">[fastqtl] F2  n=200  markers=100  positions=561  traits=1  method=cim
+   yield: cofactors M1_11(1:50.7), M3_06(3:26.6), M4_19(4:91.1)
+   yield: max LOD 28.66, 5% threshold 4.14
+trait chrom  pos  LOD      locus  ci_lo  ci_hi  bayes_lo  bayes_hi  genome_p
+yield     1 50.7 28.7      M1_11   46.5   52.5      48.5      51.5   0.00498
+yield     3 27.9 15.7 c3.loc27.9   23.9   31.9      25.9      30.8   0.00498
+yield     4 93.3 5.94 c4.loc93.3   85.3   96.3      88.3      95.3   0.00498
+✓ done in 4.403 s → results/cim</span></pre><figure class=""><a href="img/cli/qtl_cim_lod.png"><img loading="lazy" src="img/cli/qtl_cim_lod.png" alt="Composite interval mapping with cofactors chosen by forward selection."></a><figcaption>Composite interval mapping with cofactors chosen by forward selection.</figcaption></figure><h3>Multiple-QTL models and epistasis</h3><pre class="term"><span class="prompt">$ qtlmapper3 stepwise \
+    -g data/demo_f2/genotype.csv -p data/demo_f2/phenotype.csv -m data/demo_f2/map.csv -t yield --permutations 200 \
+    -o results/step</span>
+<span class="out">   yield: main-effect penalty from 200 permutations = 3.003
+   yield: y ~ Q1 + Q2 + Q3  pLOD=28.736
+QTL chrom  pos
+ Q1     1 50.7
+ Q2     3 27.9
+ Q3     4 93.3
+      model LOD 37.75, 58.1% variance
+✓ stepwise done in 0.94 s → results/step</span></pre><pre class="term"><span class="prompt">$ qtlmapper3 scan2 \
+    -g data/demo_f2/genotype.csv -p data/demo_f2/phenotype.csv -m data/demo_f2/map.csv -t yield --step-size 5 \
+    -o results/scan2</span>
+<span class="out">chr1 chr2  pos1f  pos2f  lod_full  lod_fv1  lod_int  pos1a  pos2a  lod_add  lod_av1
+   1    3  50.70  30.80     33.56    15.70     1.90  50.70  30.80    31.67    13.80
+   1    4  50.70  91.30     22.39     4.52     0.54  50.70  91.30    21.84     3.98
+   1    5  50.70   6.30     21.77     3.91     1.19  50.70   1.30    20.77     2.90
+   1    2  50.70  16.80     20.76     2.90     2.75  50.70  26.50    18.74     0.88
+   1    1   5.90  50.70     20.22     2.36     2.24  50.70  66.60    18.67     0.81
+   3    5  26.60  25.20     12.55     5.79     2.60  26.60  11.60    10.75     3.98
+   4    5  96.30  15.30      9.70     5.94     3.85  96.60  15.30     5.86     2.10
+   3    4  26.60  96.60      9.52     2.75     0.26  26.60  96.60     9.26     2.49
+   3    3  30.80  70.90      8.65     1.89     1.84  26.60  61.60     7.59     0.82
+   2    3   6.50  25.90      8.52     1.76     1.55   1.50  26.60     7.53     0.76
+✓ scan2 done in 1.27 s → results/scan2</span></pre><figure class=""><a href="img/cli/scan2.png"><img loading="lazy" src="img/cli/scan2.png" alt="Two-dimensional scan: full (upper) and interaction (lower) LOD."></a><figcaption>Two-dimensional scan: full (upper) and interaction (lower) LOD.</figcaption></figure><h3>GWAS</h3><pre class="term"><span class="prompt">$ qtlmapper3 gwas \
+    -g data/demo_gwas/genotype.csv -p data/demo_gwas/phenotype.csv -m data/demo_gwas/map.csv --method mlm \
+    -o results/gwas</span>
+<span class="out">   grain_weight: MLM(LOCO, PCs=0, P3D)  λGC=1.606  significant=27
+marker chrom   pos      beta            p
+S1_026     1 50.01  2.138206 2.217465e-18
+S1_027     1 52.47  1.926367 7.708106e-15
+S3_025     3 48.15 -1.825503 7.912474e-14
+S1_028     1 54.73  1.800912 2.157027e-13
+S3_026     3 50.15 -1.822656 3.863312e-13
+S3_024     3 46.69 -1.559191 9.744008e-11
+S1_025     1 48.18  1.691071 1.713062e-10
+S3_027     3 52.46 -1.579269 5.936734e-10
+S5_031     5 60.90  1.326833 3.394242e-09
+S3_021     3 40.96 -1.250416 5.717451e-08
+   plant_height: MLM(LOCO, PCs=0, P3D)  λGC=0.952  significant=0
+✓ GWAS done in 1.27 s → results/gwas</span></pre><figure class=""><a href="img/cli/gwas_manhattan.png"><img loading="lazy" src="img/cli/gwas_manhattan.png" alt="Manhattan and QQ plots."></a><figcaption>Manhattan and QQ plots.</figcaption></figure><h3>Genomic prediction</h3><pre class="term"><span class="prompt">$ qtlmapper3 gs \
+    -g data/demo_gwas/genotype.csv -p data/demo_gwas/phenotype.csv --models gblup,rrblup,ad,BayesB,BL,rf --folds 5 --reps 2 \
+    -o results/gs</span>
+<span class="out">     grain_weight    gblup  r = 0.532 ± 0.075
+     grain_weight   rrblup  r = 0.532 ± 0.075
+     grain_weight       ad  r = 0.533 ± 0.070
+     grain_weight   BayesB  r = 0.644 ± 0.057
+     grain_weight       BL  r = 0.578 ± 0.073
+     grain_weight       rf  r = 0.527 ± 0.103
+     plant_height    gblup  r = -0.046 ± 0.100
+     plant_height   rrblup  r = -0.046 ± 0.100
+     plant_height       ad  r = -0.088 ± 0.134
+     plant_height   BayesB  r = -0.102 ± 0.099
+     plant_height       BL  r = -0.047 ± 0.087
+     plant_height       rf  r = -0.099 ± 0.112
+✓ GS done in 40.7 s → results/gs</span></pre><figure class=""><a href="img/cli/gs_accuracy.png"><img loading="lazy" src="img/cli/gs_accuracy.png" alt="Cross-validated prediction accuracy."></a><figcaption>Cross-validated prediction accuracy.</figcaption></figure><h3 id="cli-popgen">Population genetics</h3><p>PCA, IBS distance and NJ/UPGMA trees, ADMIXTURE-model ancestry with cross-validation, Hudson and Weir–Cockerham F<sub>ST</sub>, Nei's distance, π, Watterson's θ, Tajima's D in windows, heterozygosity and F, LD decay and LD blocks. Demo: <code>data/demo_popgen</code> (six simulated populations, a selective sweep on chromosome 2).</p><pre class="term"><span class="prompt">$ qtlmapper3 popgen \
+    -g data/demo_popgen/genotype.csv -p data/demo_popgen/populations.csv -m data/demo_popgen/map.csv --coords data/demo_popgen/coordinates.csv --k 2-6 \
+    -o results/popgen</span>
+<span class="out">[popgen] 260 individuals, 2289 SNPs (MAF ≥ 0.01), 7 populations
+   ADMIXTURE K=2: loglik -560168.9 (26 iterations)
+   ADMIXTURE K=3: loglik -540830.1 (63 iterations)
+   ADMIXTURE K=4: loglik -524606.6 (70 iterations)
+   ADMIXTURE K=5: loglik -508371.3 (86 iterations)
+   ADMIXTURE K=6: loglik -492415.4 (65 iterations)
+   cross-validation → best K = 6
+population  n_snps       pi  theta_w  tajima_D
+     Coast    2289 0.287611 0.160443  2.760829
+     Delta    2289 0.280767 0.159649  2.642530
+    Plains    2289 0.280607 0.158943  2.666179
+    Valley    2289 0.281510 0.158150  2.716907
+     Ridge    2289 0.279411 0.158150  2.670681
+  Highland    2289 0.272636 0.154621  2.658370
+   Admixed    2289 0.337728 0.227909  1.813525
+   note: π, θ_W and Tajima&#x27;s D are per genotyped SNP. Without invariant sites (SNP arrays, GBS SNP calls)
+   D is shifted upwards by SNP ascertainment: compare it between populations or windows, not against 0.
+   pairwise Hudson FST:
+           Coast   Delta  Plains  Valley   Ridge  Highland  Admixed
+Coast     0.0000  0.1582  0.1531  0.2002  0.1997    0.2205   0.0745
+Delta     0.1582  0.0000  0.1548  0.2039  0.2089    0.2254   0.0855
+Plains    0.1531  0.1548  0.0000  0.2078  0.2083    0.2245   0.0799
+Valley    0.2002  0.2039  0.2078  0.0000  0.1558    0.1792   0.0809
+Ridge     0.1997  0.2089  0.2083  0.1558  0.0000    0.1755   0.0840
+Highland  0.2205  0.2254  0.2245  0.1792  0.1755    0.0000   0.0814
+Admixed   0.0745  0.0855  0.0799  0.0809  0.0840    0.0814   0.0000
+✓ popgen done in 73.63 s → results/popgen</span></pre><figure class=""><a href="img/popgen/admixture.png"><img loading="lazy" src="img/popgen/admixture.png" alt="Ancestry for K = 2–6; cross-validation selects K = 6, the number of simulated source populations."></a><figcaption>Ancestry for K = 2–6; cross-validation selects K = 6, the number of simulated source populations.</figcaption></figure><figure class=""><a href="img/popgen/pca.png"><img loading="lazy" src="img/popgen/pca.png" alt="PCA with 95 % ellipses and scree plot."></a><figcaption>PCA with 95 % ellipses and scree plot.</figcaption></figure><figure class=""><a href="img/popgen/ancestry_pies.png"><img loading="lazy" src="img/popgen/ancestry_pies.png" alt="Mean ancestry per population on the sampling map (makePopMap style)."></a><figcaption>Mean ancestry per population on the sampling map (makePopMap style).</figcaption></figure><figure class=""><a href="img/popgen/tree_circular.png"><img loading="lazy" src="img/popgen/tree_circular.png" alt="Neighbour-joining tree of individuals (IBS distance)."></a><figcaption>Neighbour-joining tree of individuals (IBS distance).</figcaption></figure><figure class=""><a href="img/popgen/fst_nei.png"><img loading="lazy" src="img/popgen/fst_nei.png" alt="Pairwise Hudson F&lt;sub&gt;ST&lt;/sub&gt; and Nei&#x27;s distance."></a><figcaption>Pairwise Hudson F<sub>ST</sub> and Nei's distance.</figcaption></figure><figure class=""><a href="img/popgen/diversity_windows.png"><img loading="lazy" src="img/popgen/diversity_windows.png" alt="π, θ&lt;sub&gt;W&lt;/sub&gt;, Tajima&#x27;s D and F&lt;sub&gt;ST&lt;/sub&gt; in windows: the sweep on chromosome 2 stands out."></a><figcaption>π, θ<sub>W</sub>, Tajima's D and F<sub>ST</sub> in windows: the sweep on chromosome 2 stands out.</figcaption></figure><figure class=""><a href="img/popgen/popgen_circos.png"><img loading="lazy" src="img/popgen/popgen_circos.png" alt="Circular overview of the windowed statistics (PopGenCircos style)."></a><figcaption>Circular overview of the windowed statistics (PopGenCircos style).</figcaption></figure><figure class=""><a href="img/popgen/ld_decay.png"><img loading="lazy" src="img/popgen/ld_decay.png" alt="LD decay with exponential fit (PopLDdecay style)."></a><figcaption>LD decay with exponential fit (PopLDdecay style).</figcaption></figure><h3>Meta-QTL analysis</h3><p>BioMercator/MetaQTL workflow: QTL from different studies are projected onto a consensus map (piecewise homothetic through common markers, order conflicts removed), clustered by a Gaussian mixture with known variances, and the number of meta-QTL chosen by AIC, AICc, AIC3, BIC or AWE. Each meta-QTL comes with Cochran's Q and I², outlier flags and an optional leave-one-study-out check. Demo: <code>data/demo_metaqtl</code> (six simulated studies, eight true meta-QTL).</p><pre class="term"><span class="prompt">$ qtlmapper3 metaqtl --qtl data/demo_metaqtl/qtl.csv --maps data/demo_metaqtl/maps --consensus data/demo_metaqtl/consensus_map.csv --loso \
+    -o results/metaqtl</span>
+<span class="out">[metaqtl] 36 QTL, 6 studies, 5 chromosomes
+MetaQTL  Position_cM  CI_Lower  CI_Upper  N_Source_QTL    I2      Q_p                 Traits
+MQTL1.1        33.23     29.76     36.70             5 0.456 0.118219 flowering;height;yield
+MQTL1.2        82.37     76.28     88.45             3 0.000 0.876926              flowering
+MQTL2.1        48.27     44.98     51.55             4 0.000 0.541795 flowering;height;yield
+MQTL3.1        20.53     17.83     23.22             6 0.094 0.355765 flowering;height;yield
+MQTL3.2        59.88     56.89     62.88             5 0.339 0.195098 flowering;height;yield
+MQTL3.3       100.22     96.88    103.56             4 0.255 0.258507        flowering;yield
+MQTL4.1        70.17     67.64     72.71             4 0.000 0.440730       flowering;height
+MQTL5.1        45.43     42.44     48.42             5 0.295 0.224905 flowering;height;yield
+   outliers (|z|&gt;3): 0 · ambiguous memberships: 0
+✓ metaqtl done in 31.4 s → results/metaqtl</span></pre><figure class=""><a href="img/metaqtl/metaqtl_chr3.png"><img loading="lazy" src="img/metaqtl/metaqtl_chr3.png" alt="Chromosome 3: QTL intervals by trait, three meta-QTL with 95 % CIs, and the QTL overview index."></a><figcaption>Chromosome 3: QTL intervals by trait, three meta-QTL with 95 % CIs, and the QTL overview index.</figcaption></figure><figure class=""><a href="img/metaqtl/metaqtl_genome.png"><img loading="lazy" src="img/metaqtl/metaqtl_genome.png" alt="Genome overview: every meta-QTL, the QTL behind it and the overview density."></a><figcaption>Genome overview: every meta-QTL, the QTL behind it and the overview density.</figcaption></figure><figure class=""><a href="img/metaqtl/model_selection_chr3.png"><img loading="lazy" src="img/metaqtl/model_selection_chr3.png" alt="Model selection: five criteria agree on K = 3; Akaike weights show the support."></a><figcaption>Model selection: five criteria agree on K = 3; Akaike weights show the support.</figcaption></figure><figure class=""><a href="img/metaqtl/projection_S3_chr2.png"><img loading="lazy" src="img/metaqtl/projection_S3_chr2.png" alt="Projection of study S3 onto the consensus map; the inverted markers (red) are excluded."></a><figcaption>Projection of study S3 onto the consensus map; the inverted markers (red) are excluded.</figcaption></figure><h3>Variant annotation with snpEff</h3><p>QTLMapper3 runs an installed <a href='https://pcingola.github.io/SnpEff/'>snpEff</a> (Cingolani <i>et al.</i> 2012; not bundled) and turns its <code>ANN</code> field into tables, a summary figure and annotated GWAS/QTL hit lists with nearest genes.</p><pre class="term"><span class="prompt">qtlmapper3 annotate databases --search oryza
+qtlmapper3 annotate run --vcf calls.vcf.gz --genome Oryza_sativa --download -o results/annotate
+qtlmapper3 annotate hits --hits results/gwas/gwas_yield_significant.csv \
+    --vcf results/annotate/annotated.vcf --gff genes.gff3 --flank 50000 -o results/annotate</span></pre><pre class="term"><span class="prompt">$ qtlmapper3 annotate parse --vcf example.ann.vcf \
+    -o results/annotate</span>
+<span class="out">  3,000 variants, 3,000 transcript annotations; HIGH 30, MODERATE 215, LOW 335, MODIFIER 2,420
+  top genes: GENE0024 (HIGH), GENE0060 (HIGH), GENE0061 (HIGH), GENE0320 (HIGH), GENE0374 (HIGH)
+done in 0.7s</span></pre><figure class=""><a href="img/annotate/snpeff_summary.png"><img loading="lazy" src="img/annotate/snpeff_summary.png" alt="Impact classes and the most frequent effects (illustrative: synthetic ANN records)."></a><figcaption>Impact classes and the most frequent effects (illustrative: synthetic ANN records).</figcaption></figure><h3>All commands</h3><pre class="term"><span class="out">qtlmapper3 --help              # every command
+qtlmapper3 qtl --help          # options for one command
+qtlmapper3 popgen | metaqtl | annotate --help
+qtlmapper3 check-update        # look for a newer release</span></pre></section>
+<section id="figures"><h2>Visualization Studio</h2><p>Twenty-one figure types, each drawn from your loaded data or stored results and exportable to PNG, PDF, SVG or TIFF. Layouts follow circos, LinkageMapView, karyoploteR, VIEWpoly, R/qtl2, LocusZoom and qtlPlots.</p><div class="gallery"><figure class="g"><a href="img/studio/Genotype_matrix.png"><img loading="lazy" src="img/studio/Genotype_matrix.png" alt="Genotype matrix"></a><figcaption>Genotype matrix</figcaption></figure><figure class="g"><a href="img/studio/Data_quality_missingness_segregation.png"><img loading="lazy" src="img/studio/Data_quality_missingness_segregation.png" alt="Data quality (missingness, segregation)"></a><figcaption>Data quality (missingness, segregation)</figcaption></figure><figure class="g"><a href="img/studio/Phenotype_distributions.png"><img loading="lazy" src="img/studio/Phenotype_distributions.png" alt="Phenotype distributions"></a><figcaption>Phenotype distributions</figcaption></figure><figure class="g"><a href="img/studio/Trait_correlations.png"><img loading="lazy" src="img/studio/Trait_correlations.png" alt="Trait correlations"></a><figcaption>Trait correlations</figcaption></figure><figure class="g"><a href="img/studio/Marker_LD_r_heatmap.png"><img loading="lazy" src="img/studio/Marker_LD_r_heatmap.png" alt="Marker LD (r²) heatmap"></a><figcaption>Marker LD (r²) heatmap</figcaption></figure><figure class="g"><a href="img/studio/Circos_genome_overview.png"><img loading="lazy" src="img/studio/Circos_genome_overview.png" alt="Circos genome overview"></a><figcaption>Circos genome overview</figcaption></figure><figure class="g"><a href="img/studio/Karyotype_with_QTL_GWAS_hits.png"><img loading="lazy" src="img/studio/Karyotype_with_QTL_GWAS_hits.png" alt="Karyotype with QTL &amp; GWAS hits"></a><figcaption>Karyotype with QTL & GWAS hits</figcaption></figure><figure class="g"><a href="img/studio/Marker_density.png"><img loading="lazy" src="img/studio/Marker_density.png" alt="Marker density"></a><figcaption>Marker density</figcaption></figure><figure class="g"><a href="img/studio/Linkage_map_QTL_intervals.png"><img loading="lazy" src="img/studio/Linkage_map_QTL_intervals.png" alt="Linkage map (+ QTL intervals)"></a><figcaption>Linkage map (+ QTL intervals)</figcaption></figure><figure class="g"><a href="img/studio/LOD_profile.png"><img loading="lazy" src="img/studio/LOD_profile.png" alt="LOD profile"></a><figcaption>LOD profile</figcaption></figure><figure class="g"><a href="img/studio/QTL_effect_plot.png"><img loading="lazy" src="img/studio/QTL_effect_plot.png" alt="QTL effect plot"></a><figcaption>QTL effect plot</figcaption></figure><figure class="g"><a href="img/studio/Linkage_map_chart_LinkageMapView_style.png"><img loading="lazy" src="img/studio/Linkage_map_chart_LinkageMapView_style.png" alt="Linkage map chart (LinkageMapView style)"></a><figcaption>Linkage map chart (LinkageMapView style)</figcaption></figure><figure class="g"><a href="img/studio/Genotype_probabilities_VIEWpoly_style.png"><img loading="lazy" src="img/studio/Genotype_probabilities_VIEWpoly_style.png" alt="Genotype probabilities (VIEWpoly style)"></a><figcaption>Genotype probabilities (VIEWpoly style)</figcaption></figure><figure class="g"><a href="img/studio/QTL_effects_along_chromosome.png"><img loading="lazy" src="img/studio/QTL_effects_along_chromosome.png" alt="QTL effects along chromosome"></a><figcaption>QTL effects along chromosome</figcaption></figure><figure class="g"><a href="img/studio/Multi_trait_LOD_heatmap.png"><img loading="lazy" src="img/studio/Multi_trait_LOD_heatmap.png" alt="Multi-trait LOD heatmap"></a><figcaption>Multi-trait LOD heatmap</figcaption></figure><figure class="g"><a href="img/studio/QTL_summary_hotspots.png"><img loading="lazy" src="img/studio/QTL_summary_hotspots.png" alt="QTL summary &amp; hotspots"></a><figcaption>QTL summary & hotspots</figcaption></figure><figure class="g"><a href="img/studio/Manhattan_QQ.png"><img loading="lazy" src="img/studio/Manhattan_QQ.png" alt="Manhattan + QQ"></a><figcaption>Manhattan + QQ</figcaption></figure><figure class="g"><a href="img/studio/Genomic_prediction_accuracy.png"><img loading="lazy" src="img/studio/Genomic_prediction_accuracy.png" alt="Genomic prediction accuracy"></a><figcaption>Genomic prediction accuracy</figcaption></figure><figure class="g"><a href="img/studio/Regional_association_LocusZoom_style.png"><img loading="lazy" src="img/studio/Regional_association_LocusZoom_style.png" alt="Regional association (LocusZoom style)"></a><figcaption>Regional association (LocusZoom style)</figcaption></figure><figure class="g"><a href="img/studio/Miami_plot.png"><img loading="lazy" src="img/studio/Miami_plot.png" alt="Miami plot"></a><figcaption>Miami plot</figcaption></figure><figure class="g"><a href="img/studio/Circular_Manhattan.png"><img loading="lazy" src="img/studio/Circular_Manhattan.png" alt="Circular Manhattan"></a><figcaption>Circular Manhattan</figcaption></figure></div></section>
+<section id="validation"><h2>Validation and speed</h2>
+<h3>Agreement with reference software</h3><div class="tablewrap"><table><thead><tr><th>Quantity</th><th>Reference</th><th>Max. difference</th></tr></thead><tbody><tr><td>Genotype probabilities</td><td>R/qtl2 calc_genoprob</td><td>≤ 3e-12</td></tr><tr><td>Haley–Knott LOD</td><td>R/qtl2 scan1</td><td>≤ 5e-12</td></tr><tr><td>LMM-LOCO LOD, heritability</td><td>R/qtl2 scan1 / est_herit</td><td>≤ 4e-7</td></tr><tr><td>EM interval mapping</td><td>R/qtl scanone(em)</td><td>≤ 5e-7</td></tr><tr><td>Two-QTL scan</td><td>R/qtl scantwo(hk)</td><td>exact on full-rank pairs</td></tr><tr><td>Stepwise model, pLOD, effects</td><td>R/qtl stepwiseqtl / fitqtl</td><td>identical</td></tr><tr><td>CIM</td><td>R/qtl cim</td><td>≤ 7e-12</td></tr><tr><td>MLM GWAS (P3D)</td><td>rrBLUP GWAS</td><td>5e-5</td></tr><tr><td>GBLUP / RR-BLUP</td><td>rrBLUP mixed.solve</td><td>2.8e-6 / 3.9e-7</td></tr><tr><td>A + A#A multi-kernel</td><td>sommer mmer</td><td>6e-5 (relative)</td></tr><tr><td>BRR, BayesA/B/C, Bayesian LASSO</td><td>BGLR</td><td>GEBV r ≥ 0.993</td></tr><tr><td>Hudson / Weir–Cockerham FST, π, Tajima's D</td><td>scikit-allel</td><td>≤ 1e-15 (exact)</td></tr><tr><td>ADMIXTURE model, NJ tree</td><td>simulated truth</td><td>Q r = 0.999; CV picks true K</td></tr><tr><td>Meta-QTL positions</td><td>simulated truth (8 meta-QTL)</td><td>all recovered; 95 % CI coverage nominal</td></tr></tbody></table></div>
+<h3>Speed</h3><p>Apple M5; QTLMapper3 on 10 threads, reference tools as published (single core). Full tables in <a href="benchmarks.html">the benchmark page</a>.</p>
+<div class="tablewrap"><table><thead><tr><th>Task</th><th>QTLMapper3</th><th>Reference</th><th>Speed-up</th></tr></thead><tbody><tr><td>1,000 permutations (1,000 × 5,000 F2)</td><td>0.56 s</td><td>17.4 s</td><td>31×</td></tr><tr><td>LMM-LOCO scan (1,000 × 5,000)</td><td>1.31 s</td><td>6.89 s</td><td>5.3×</td></tr><tr><td>Haley–Knott scan (1,000 × 5,000)</td><td>0.13 s</td><td>0.20 s</td><td>1.5×</td></tr><tr><td>GBLUP (599 × 1,279 wheat)</td><td>0.034 s</td><td>0.23 s (rrBLUP)</td><td>7×</td></tr><tr><td>A + A#A AI-REML</td><td>0.15 s</td><td>0.56 s (sommer)</td><td>4×</td></tr><tr><td>BayesB, 6,000 iterations</td><td>2.85 s</td><td>3.63 s (BGLR)</td><td>1.3×</td></tr></tbody></table></div></section>
+</main>
+<footer><img src="img/logo.svg" alt="" width="24" style="vertical-align:middle"> QTLMapper3 v3.1.0 · MIT License · built on the legacy of Andrew H. Paterson's QTLMapper</footer>
+<script>
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.os').forEach(o=>o.classList.toggle('on',o.id==='os-'+b.dataset.os));});
+</script>
+</body></html>

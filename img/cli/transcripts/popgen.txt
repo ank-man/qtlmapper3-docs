@@ -1,0 +1,28 @@
+$ qtlmapper3 popgen -g data/demo_popgen/genotype.csv -p data/demo_popgen/populations.csv -m data/demo_popgen/map.csv --coords data/demo_popgen/coordinates.csv --k 2-6 -o results/popgen
+[popgen] 260 individuals, 2289 SNPs (MAF ≥ 0.01), 7 populations
+   ADMIXTURE K=2: loglik -560168.9 (26 iterations)
+   ADMIXTURE K=3: loglik -540830.1 (63 iterations)
+   ADMIXTURE K=4: loglik -524606.6 (70 iterations)
+   ADMIXTURE K=5: loglik -508371.3 (86 iterations)
+   ADMIXTURE K=6: loglik -492415.4 (65 iterations)
+   cross-validation → best K = 6
+population  n_snps       pi  theta_w  tajima_D
+     Coast    2289 0.287611 0.160443  2.760829
+     Delta    2289 0.280767 0.159649  2.642530
+    Plains    2289 0.280607 0.158943  2.666179
+    Valley    2289 0.281510 0.158150  2.716907
+     Ridge    2289 0.279411 0.158150  2.670681
+  Highland    2289 0.272636 0.154621  2.658370
+   Admixed    2289 0.337728 0.227909  1.813525
+   note: π, θ_W and Tajima's D are per genotyped SNP. Without invariant sites (SNP arrays, GBS SNP calls)
+   D is shifted upwards by SNP ascertainment: compare it between populations or windows, not against 0.
+   pairwise Hudson FST:
+           Coast   Delta  Plains  Valley   Ridge  Highland  Admixed
+Coast     0.0000  0.1582  0.1531  0.2002  0.1997    0.2205   0.0745
+Delta     0.1582  0.0000  0.1548  0.2039  0.2089    0.2254   0.0855
+Plains    0.1531  0.1548  0.0000  0.2078  0.2083    0.2245   0.0799
+Valley    0.2002  0.2039  0.2078  0.0000  0.1558    0.1792   0.0809
+Ridge     0.1997  0.2089  0.2083  0.1558  0.0000    0.1755   0.0840
+Highland  0.2205  0.2254  0.2245  0.1792  0.1755    0.0000   0.0814
+Admixed   0.0745  0.0855  0.0799  0.0809  0.0840    0.0814   0.0000
+✓ popgen done in 73.63 s → results/popgen

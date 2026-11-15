@@ -1,0 +1,14 @@
+$ qtlmapper3 gs -g data/demo_gwas/genotype.csv -p data/demo_gwas/phenotype.csv --models gblup,rrblup,ad,BayesB,BL,rf --folds 5 --reps 2 -o results/gs
+     grain_weight    gblup  r = 0.532 ± 0.075
+     grain_weight   rrblup  r = 0.532 ± 0.075
+     grain_weight       ad  r = 0.533 ± 0.070
+     grain_weight   BayesB  r = 0.644 ± 0.057
+     grain_weight       BL  r = 0.578 ± 0.073
+     grain_weight       rf  r = 0.527 ± 0.103
+     plant_height    gblup  r = -0.046 ± 0.100
+     plant_height   rrblup  r = -0.046 ± 0.100
+     plant_height       ad  r = -0.088 ± 0.134
+     plant_height   BayesB  r = -0.102 ± 0.099
+     plant_height       BL  r = -0.047 ± 0.087
+     plant_height       rf  r = -0.099 ± 0.112
+✓ GS done in 40.7 s → results/gs

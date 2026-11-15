@@ -1,0 +1,4 @@
+$ qtlmapper3 annotate parse --vcf example.ann.vcf -o results/annotate
+  3,000 variants, 3,000 transcript annotations; HIGH 30, MODERATE 215, LOW 335, MODIFIER 2,420
+  top genes: GENE0024 (HIGH), GENE0060 (HIGH), GENE0061 (HIGH), GENE0320 (HIGH), GENE0374 (HIGH)
+done in 0.7s

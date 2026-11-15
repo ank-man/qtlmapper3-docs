@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>QTLMapper3 benchmarks</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2.1.1/out/water.min.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">QTLMapper3 benchmarks</h1>
+</header>
+<h1 id="fastqtl-validation-and-benchmarks">fastqtl: validation and
+benchmarks</h1>
+<p><em>Apple M5, Python 3.13, NumPy (Accelerate BLAS) pinned to one
+thread; R 4.x with R/qtl2 <code>cores=1</code>. Scripts:
+<code>scripts/benchmark/bench_r.R</code>,
+<code>scripts/benchmark/bench_py.py</code>. Raw timings:
+<code>docs/benchmarks/</code>.</em></p>
+<h2 id="correctness-against-reference-implementations">1. Correctness
+against reference implementations</h2>
+<p>Maximum absolute difference between QTLMapper3
+<code>core.fastqtl</code> and the reference tool on the same input (BC =
+R/qtl <code>hyper</code>, F2 = R/qtl <code>listeria</code>, RIL =
+simulated RIL-selfing, F2-dom = simulated F2 with dominant C/D calls;
+1-cM pseudomarker grid; error 1e-4; Haldane).</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Reference</th>
+<th>BC</th>
+<th>F2</th>
+<th>RIL</th>
+<th>F2-dom</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Genotype probabilities</td>
+<td>R/qtl2 <code>calc_genoprob</code></td>
+<td>3e-12</td>
+<td>4e-13</td>
+<td>3e-14</td>
+<td>2e-14</td>
+</tr>
+<tr>
+<td>HK LOD</td>
+<td>R/qtl2 <code>scan1</code></td>
+<td>5e-12</td>
+<td>1e-13</td>
+<td>2e-13</td>
+<td>4e-14</td>
+</tr>
+<tr>
+<td>LMM-LOCO LOD</td>
+<td>R/qtl2 <code>scan1(kinship=loco)</code></td>
+<td>2e-7</td>
+<td>8e-8</td>
+<td>9e-14</td>
+<td>4e-7</td>
+</tr>
+<tr>
+<td>Per-chromosome h²</td>
+<td>R/qtl2 <code>est_herit</code></td>
+<td>1e-7</td>
+<td>7e-8</td>
+<td>0</td>
+<td>2e-7</td>
+</tr>
+<tr>
+<td>EM interval-mapping LOD</td>
+<td>R/qtl <code>scanone(method="em")</code></td>
+<td>5e-7</td>
+<td>5e-7</td>
+<td>2e-9</td>
+<td>5e-7</td>
+</tr>
+<tr>
+<td>2-QTL LOD (full / additive)</td>
+<td>R/qtl <code>scantwo(method="hk")</code></td>
+<td>exact on all full-rank pairs*</td>
+<td>″</td>
+<td>2e-13</td>
+<td>2e-9</td>
+</tr>
+<tr>
+<td>Stepwise model, pLOD, effects</td>
+<td>R/qtl <code>stepwiseqtl</code>, <code>fitqtl</code></td>
+<td>identical</td>
+<td>identical</td>
+<td>identical</td>
+<td>identical</td>
+</tr>
+<tr>
+<td>CIM cofactors and LOD</td>
+<td>R/qtl <code>cim(imp.method="argmax")</code></td>
+<td>7e-12</td>
+<td>—</td>
+<td>2e-13</td>
+<td>3e-14</td>
+</tr>
+<tr>
+<td>MLM −log10 p (P3D)</td>
+<td>rrBLUP <code>GWAS</code></td>
+<td>5e-5 (demo GWAS panel, same imputed genotypes)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>* 4 of 1,662 pairs differ; all are rank-deficient designs (co-located
+markers, r = 0), where the least-squares fit depends on the rank
+tolerance.</p>
+<p>These comparisons are executed by <code>tests/test_fastqtl.py</code>
+(29 tests) and <code>tests/test_gs.py</code> (11 tests) on every
+run.</p>
+<h2
+id="speed-f2-crosses-simulated-with-rqtl-sim.cross-10-chromosomes-150-cm-1-cm-grid">2.
+Speed — F2 crosses simulated with R/qtl <code>sim.cross</code> (10
+chromosomes × 150 cM, 1-cM grid)</h2>
+<p>Each cell: <strong>QTLMapper3 fastqtl / R/qtl2</strong> (seconds,
+single core).</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>individuals × markers</th>
+<th>genotype probs</th>
+<th>HK scan</th>
+<th>1,000 permutations</th>
+<th>LMM-LOCO scan</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200 × 500 (1,973 pos.)</td>
+<td>0.05 / 0.16</td>
+<td>0.017 / 0.017</td>
+<td><strong>0.11 / 1.16</strong> (11×)</td>
+<td>0.06 / 0.08 (1.3×)</td>
+</tr>
+<tr>
+<td>500 × 2,000 (3,445 pos.)</td>
+<td>0.20 / 0.78</td>
+<td>0.092 / 0.057</td>
+<td><strong>0.35 / 4.63</strong> (13×)</td>
+<td>0.38 / 0.94 (2.5×)</td>
+</tr>
+<tr>
+<td>1,000 × 5,000 (6,383 pos.)</td>
+<td>0.76 / 2.45</td>
+<td>0.348 / 0.203</td>
+<td><strong>1.05 / 17.39</strong> (17×)</td>
+<td>1.73 / 6.89 (4.0×)</td>
+</tr>
+</tbody>
+</table>
+<p>R/qtl2’s compiled HK scan is still faster for a single scan; fastqtl
+is faster for everything that repeats the scan (permutations, LMM, many
+traits) because one QR per position is shared by all traits and
+permutations.</p>
+<h3
+id="multi-core-after-the-parallel-gramschmidt-kernel-corefastqtllinalg.py">Multi-core
+(after the parallel Gram–Schmidt kernel,
+<code>core/fastqtl/linalg.py</code>)</h3>
+<p>Per-position designs are orthonormalised by a Numba
+<code>prange</code> kernel (CGS2 with exact rank handling) instead of
+batched LAPACK QR: 5× faster per batch, identical projections (max |Δ|
+6e-14), all reference tests unchanged. Raw:
+<code>docs/benchmarks/timing_fastqtl_threads.csv</code>.</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>individuals × markers</th>
+<th>HK 1 thread / 10 threads</th>
+<th>1,000 perms 1 / 10 threads</th>
+<th>LMM-LOCO 1 / 10 threads</th>
+<th>R/qtl2 HK (1 core)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200 × 500</td>
+<td>0.018 / 0.008</td>
+<td>0.12 / 0.07</td>
+<td>0.061 / 0.052</td>
+<td>0.017</td>
+</tr>
+<tr>
+<td>500 × 2,000</td>
+<td>0.070 / 0.033</td>
+<td>0.28 / 0.18</td>
+<td>0.32 / 0.28</td>
+<td>0.057</td>
+</tr>
+<tr>
+<td>1,000 × 5,000</td>
+<td>0.268 / 0.132</td>
+<td>0.88 / 0.56</td>
+<td>1.75 / 1.31</td>
+<td>0.203</td>
+</tr>
+</tbody>
+</table>
+<h3 id="against-qtlmapper3-v3.0-legacy-code-200-500">Against QTLMapper3
+v3.0 (legacy code, 200 × 500)</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>task</th>
+<th>v3.0</th>
+<th>fastqtl</th>
+<th>speed-up</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>interval mapping, 1-cM grid</td>
+<td>31.6 s</td>
+<td>0.017 s (HK)</td>
+<td>~1,900×</td>
+</tr>
+<tr>
+<td>permutations</td>
+<td>105 s for 100</td>
+<td>0.11 s for 1,000</td>
+<td>~9,500× per permutation</td>
+</tr>
+</tbody>
+</table>
+<p>v3.0 also produced wrong genotype probabilities (F2 and RIL
+transition matrices), dropped the dominance term in “Haley–Knott”, never
+applied its permutation threshold, and reported every local maximum as a
+QTL (33 “QTL” on the 3-QTL demo cross). See
+<code>docs/DEVELOPMENT_PLAN.md</code> §1.</p>
+<h2 id="genomic-selection-bglr-wheat-599-lines-1279-markers-trait-1">3.
+Genomic selection — BGLR <code>wheat</code> (599 lines × 1,279 markers,
+trait 1)</h2>
+<p>Script: <code>scripts/validation/ref_gs.R</code> (R side) and
+<code>scripts/validation/compare_gs.py</code>; raw table
+<code>docs/benchmarks/gs_validation.csv</code>. Times in seconds, single
+core.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>model</th>
+<th>reference</th>
+<th>agreement</th>
+<th>QTLMapper3 / reference time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GBLUP (eigen-REML)</td>
+<td>rrBLUP <code>mixed.solve(K)</code></td>
+<td>max|Δu| 2.8e-6; Vu, Ve to 6 digits</td>
+<td><strong>0.034 / 0.23</strong> (7×)</td>
+</tr>
+<tr>
+<td>RR-BLUP</td>
+<td>rrBLUP <code>mixed.solve(Z)</code></td>
+<td>max|ΔGEBV| 3.9e-7</td>
+<td>—</td>
+</tr>
+<tr>
+<td>A + A#A (AI-REML)</td>
+<td>sommer <code>mmer</code></td>
+<td>variance components within 6e-5 (relative)</td>
+<td><strong>0.15 / 0.56</strong> (4×)</td>
+</tr>
+<tr>
+<td>BRR</td>
+<td>BGLR</td>
+<td>r(GEBV) 0.9994; 5-fold accuracy 0.511 vs 0.510</td>
+<td>2.37 / 2.69</td>
+</tr>
+<tr>
+<td>BayesA</td>
+<td>BGLR</td>
+<td>r 0.9931; 0.515 vs 0.507</td>
+<td>2.60 / 3.72</td>
+</tr>
+<tr>
+<td>BayesB</td>
+<td>BGLR</td>
+<td>r 0.9983; 0.498 vs 0.500</td>
+<td>2.85 / 3.63</td>
+</tr>
+<tr>
+<td>BayesC</td>
+<td>BGLR</td>
+<td>r 0.9995; 0.504 vs 0.504</td>
+<td>2.40 / 3.32</td>
+</tr>
+<tr>
+<td>Bayesian LASSO</td>
+<td>BGLR</td>
+<td>r 0.9994; 0.506 vs 0.503</td>
+<td>2.50 / 3.56</td>
+</tr>
+</tbody>
+</table>
+<p>Bayesian runs: 6,000 iterations, 1,000 burn-in, BGLR default priors
+(R2 = 0.5, df0 = 5). The Gibbs samplers are Monte Carlo, so they are
+compared on GEBV correlation and CV accuracy rather than on exact
+values. <code>tests/test_gs.py</code> checks GBLUP and RR-BLUP against
+rrBLUP on a small simulated panel.</p>
+</body>
+</html>
