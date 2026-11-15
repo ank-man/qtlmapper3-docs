@@ -10,4 +10,4 @@ MQTL3.3       100.22     96.88    103.56             4 0.255 0.258507        flo
 MQTL4.1        70.17     67.64     72.71             4 0.000 0.440730       flowering;height
 MQTL5.1        45.43     42.44     48.42             5 0.295 0.224905 flowering;height;yield
    outliers (|z|>3): 0 · ambiguous memberships: 0
-✓ metaqtl done in 31.4 s → results/metaqtl
+✓ metaqtl done in 36.1 s → results/metaqtl
