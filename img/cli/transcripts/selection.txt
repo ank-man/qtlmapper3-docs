@@ -1,0 +1,13 @@
+$ qtlmapper3 selection --vcf data/demo_selection/selection.vcf.gz -p data/demo_selection/populations.csv --focal North --contrast South -o results/selection
+[selection] 180 individuals, 4000 SNPs, populations ['North', 'South', 'East']; phased; focal North vs South
+   PCAdapt genomic inflation λ = 0.98
+   candidate regions (top 1 % in ≥ 2 statistics): 1
+chrom   start    stop                 statistics  n_statistics
+ chr1 2610746 3212189 H12;PBS;PCAdapt;XP-EHH;iHS             5
+   highest Tajima's D windows (North, balancing-selection candidates):
+chrom  start_bp  stop_bp  tajima_d_North
+ chr2   2850396  3195239        4.761094
+ chr2   2733244  3026649        3.982480
+ chr2   3028311  3355411        3.833858
+   purifying selection: North πN/πS 0.55, South πN/πS 0.55, East πN/πS 0.57
+✓ selection done in 5.1 s → results/selection
